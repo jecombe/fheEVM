@@ -23,6 +23,8 @@ You must deploy two tokens using the encryptedERC20 smart contract with this com
 - `npx hardhat compile` 
 - `npx hardhat run --network zama deploy/deployERC20.js`
 
+After that you need to call mint function present in file `ERC20.js` or call function `createSupply` directly from `index.js`
+
 ### Step2
 
 Once the tokens are deployed, it is now necessary to deploy the AMM contract:
