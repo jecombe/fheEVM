@@ -6,7 +6,7 @@ testing function about fhEVM created by zama.
 
 
 ## Projects
-- fheAMM: decentralized exchange (DEX) with encryption FHE.
+- fheAMM: decentralized exchange (DEX) with encryption FHE. Using testnet Zama (https://main.explorer.zama.ai/)
 ## Demo:
 
     cd fheEVM
