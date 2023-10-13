@@ -72,30 +72,6 @@ contract FheAMM {
         return PID;
     }
 
-    /*function addLiquidity(uint256 _PID, bytes calldata amount_token0, bytes calldata amount_token1) public {
-        euint32 amount0 = TFHE.asEuint32(amount_token0);
-        euint32 amount1 = TFHE.asEuint32(amount_token1);
-
-        require(TFHE.decrypt(TFHE.le(amount0, 0)), "amount0 need to be greether or equal than 0");
-        require(TFHE.decrypt(TFHE.le(amount1, 0)), "amount1 need to be greether or equal than 0");
-
-        //  checkLiquidity(amount0, amount1);
-        /* if (TFHE.decrypt(TFHE.gt(Pools[_PID].reserve0, 0)) || TFHE.decrypt(TFHE.gt(Pools[_PID].reserve1, 0))) {
-            require(
-                TFHE.decrypt(TFHE.eq(Pools[_PID].reserve0 * amount1, Pools[_PID].reserve1 * amount0)),
-                "x / y != dx / dy"
-            );
-        }
-        //  if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
-        EncryptedERC20(Pools[_PID].token0).transferFrom(msg.sender, address(this), amount0);
-        Pools[_PID].reserve0 = Pools[_PID].reserve0 + amount0;
-        //  }
-        // if (TFHE.decrypt(TFHE.gt(amount1, 0))) {
-        EncryptedERC20(Pools[_PID].token1).transferFrom(msg.sender, address(this), amount1);
-        Pools[_PID].reserve1 = Pools[_PID].reserve1 + amount1;
-        //}
-    }*/
-
     function addLiquidity(
         uint256 _PID,
         bytes calldata amount_token0,
@@ -104,8 +80,8 @@ contract FheAMM {
         euint32 amount0 = TFHE.asEuint32(amount_token0);
         euint32 amount1 = TFHE.asEuint32(amount_token1);
 
-        require(TFHE.decrypt(TFHE.gt(amount0, 0)), "amount0 need to be greether than 0");
-        require(TFHE.decrypt(TFHE.gt(amount1, 0)), "amount1 need to be greether than 0");
+        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0");
+        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0");
 
         if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
             EncryptedERC20(Pools[_PID].token0).transferFrom(msg.sender, address(this), amount0);
@@ -125,8 +101,8 @@ contract FheAMM {
         euint32 amount0 = TFHE.asEuint32(amount_token0);
         euint32 amount1 = TFHE.asEuint32(amount_token1);
 
-        require(TFHE.decrypt(TFHE.le(amount0, 0)), "amount0 need to be greether or equal than 0");
-        require(TFHE.decrypt(TFHE.le(amount1, 0)), "amount1 need to be greether or equal than 0");
+        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0");
+        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0");
 
         if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
             EncryptedERC20(Pools[_PID].token0).transfer(msg.sender, amount0);
@@ -152,10 +128,10 @@ contract FheAMM {
         EncryptedERC20(_tokenIn).transferFrom(msg.sender, address(this), amount);
 
         if (Pools[_PID].token0 == _tokenIn) {
-            amountOut = _getAmount(amount, Pools[_PID].reserve0, Pools[_PID].reserve1);
+            amountOut = TFHE.div(amount, 2);
         } else {
             amountOut = _getAmount(amount, Pools[_PID].reserve1, Pools[_PID].reserve0);
         }
-        // EncryptedERC20(tokenOut).transfer(msg.sender, amountOut);
+        EncryptedERC20(tokenOut).transfer(msg.sender, amountOut);
     }
 }
