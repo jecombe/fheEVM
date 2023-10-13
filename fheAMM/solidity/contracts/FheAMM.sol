@@ -16,19 +16,19 @@ contract FheAMM {
     constructor() {}
 
     modifier _isExistedPool(uint _PID) {
-        require(_PID <= PIDs.length, "Pool not exist");
+        require(_PID <= PIDs.length, "Pool not exist.");
         _;
     }
 
     modifier _isValidToken(address _tokenIn, uint _PID) {
-        require(_tokenIn == address(Pools[_PID].token0) || _tokenIn == address(Pools[_PID].token1), "Invalid token");
-        require(_tokenIn != address(0), "TokenIn with address null");
+        require(_tokenIn == address(Pools[_PID].token0) || _tokenIn == address(Pools[_PID].token1), "Invalid token.");
+        require(_tokenIn != address(0), "TokenIn with address null.");
         _;
     }
 
     modifier _isNullAddress(address token0, address token1) {
-        require(token0 != address(0), "not initialized X");
-        require(token1 != address(0), "not initialized Y");
+        require(token0 != address(0), "not initialized X.");
+        require(token1 != address(0), "not initialized Y.");
         _;
     }
 
@@ -76,8 +76,8 @@ contract FheAMM {
         euint32 amount0 = TFHE.asEuint32(amount_token0);
         euint32 amount1 = TFHE.asEuint32(amount_token1);
 
-        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0");
-        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0");
+        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0.");
+        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0.");
 
         if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
             EncryptedERC20(Pools[_PID].token0).transferFrom(msg.sender, address(this), amount0);
@@ -97,8 +97,8 @@ contract FheAMM {
         euint32 amount0 = TFHE.asEuint32(amount_token0);
         euint32 amount1 = TFHE.asEuint32(amount_token1);
 
-        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0");
-        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0");
+        require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0.");
+        require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0.");
 
         if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
             EncryptedERC20(Pools[_PID].token0).transfer(msg.sender, amount0);
