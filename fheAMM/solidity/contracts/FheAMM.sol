@@ -79,6 +79,13 @@ contract FheAMM {
         require(TFHE.decrypt(TFHE.ge(amount0, 0)), "amount0 need to be greether or equal than 0.");
         require(TFHE.decrypt(TFHE.ge(amount1, 0)), "amount1 need to be greether or equal than 0.");
 
+        if (TFHE.decrypt(TFHE.gt(Pools[_PID].reserve0, 0)) || TFHE.decrypt(TFHE.gt(Pools[_PID].reserve1, 0))) {
+            require(
+                TFHE.decrypt(TFHE.eq(Pools[_PID].reserve0 * amount1, Pools[_PID].reserve1 * amount0)),
+                "x / y != dx / dy"
+            );
+        }
+
         if (TFHE.decrypt(TFHE.gt(amount0, 0))) {
             EncryptedERC20(Pools[_PID].token0).transferFrom(msg.sender, address(this), amount0);
             Pools[_PID].reserve0 = Pools[_PID].reserve0 + amount0;
@@ -124,7 +131,7 @@ contract FheAMM {
         EncryptedERC20(_tokenIn).transferFrom(msg.sender, address(this), amount);
 
         if (Pools[_PID].token0 == _tokenIn) {
-            amountOut = TFHE.div(amount, 2);
+            amountOut = _getAmount(amount, Pools[_PID].reserve0, Pools[_PID].reserve1);
         } else {
             amountOut = _getAmount(amount, Pools[_PID].reserve1, Pools[_PID].reserve0);
         }
