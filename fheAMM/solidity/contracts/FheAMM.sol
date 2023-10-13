@@ -57,10 +57,6 @@ contract FheAMM {
         return _token1;
     }
 
-    function _getLiquidity(uint256 _PID) internal view returns (ebool, ebool) {
-        return (TFHE.gt(Pools[_PID].reserve0, 0), TFHE.gt(Pools[_PID].reserve1, 0));
-    }
-
     function createPool(address _token0, address _token1) public _isNullAddress(_token0, _token1) returns (uint256) {
         uint256 PID = PIDs.length;
 
