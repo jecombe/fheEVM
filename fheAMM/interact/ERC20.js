@@ -26,6 +26,20 @@ const getInstance = async () => {
   return _instance;
 };
 
+const mint = async (tokenAddr, signerAddr, amount) => {
+  const signer = new Wallet(signerAddr, provider);
+
+  // Initialize contract with ethers
+  const contract = new Contract(tokenAddr, contractInfo, signer);
+  // Get instance to encrypt amount parameter
+  const instance = await getInstance();
+  const encryptedAmount = instance.encrypt32(amount);
+
+  const transaction = await contract["mint(bytes)"](encryptedAmount);
+  return transaction;
+
+}
+
 const approve = async (signerAddr, contractAddr, amount, tokenAddr) => {
   const signer = new Wallet(signerAddr, provider);
 
@@ -71,4 +85,6 @@ const getBalance = async (signerAddr, tokenAddr) => {
 
 module.exports = {
   getBalance,
+  approve,
+  mint
 };
